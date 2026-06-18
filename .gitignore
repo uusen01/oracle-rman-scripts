@@ -1,0 +1,32 @@
+# RMAN / SQL*Plus run artifacts
+*.log
+*.lst
+*.trc
+*.arc
+*.bkp
+*.bus
+rman_logs/
+spool/
+
+# Backup pieces & datafiles must never be committed
+*.dbf
+*.ctl
+*.ora
+backupset/
+autobackup/
+
+# Local connection details / secrets
+tnsnames.ora
+sqlnet.ora
+*.env
+login.sql
+*passwd*
+*.pwd
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/

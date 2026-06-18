@@ -1,0 +1,34 @@
+$ sqlplus -s monitor_user@DEMO_TNS @scripts/rman_report.sql
+
+============= RMAN BACKUP JOBS (LAST 14 DAYS) ===============
+
+INPUT_TYPE       STATUS       START_TIME         END_TIME           DURATION          IN_GB      OUT_GB
+---------------- ------------ ------------------ ------------------ ------------ ----------- -----------
+DB INCR          COMPLETED    2026-06-17 04:00   2026-06-17 04:03   00:03:38          24.10        6.05
+DB INCR          COMPLETED    2026-06-16 04:00   2026-06-16 04:04   00:04:01          27.40        6.88
+DB INCR          COMPLETED    2026-06-15 04:00   2026-06-15 04:03   00:03:22          22.90        5.71
+DB FULL          COMPLETED    2026-06-14 01:00   2026-06-14 01:09   00:09:12         238.00       61.30
+ARCHIVELOG       COMPLETED    2026-06-13 04:00   2026-06-13 04:02   00:02:05          12.30        3.02
+
+============== MOST RECENT COMPLETED BACKUP BY TYPE ====================
+
+OBJECT_TYPE              LAST_COMPLETED
+----------------------- --------------------
+Archived Log            2026-06-17 04:03
+Control File            2026-06-17 06:05
+Datafile Full/Incr      2026-06-17 04:02
+
+================= FAILED / ERRORED BACKUP JOBS =========================
+
+(no rows selected)
+
+===================== FAST RECOVERY AREA USAGE =========================
+
+NAME                                       LIMIT_GB    USED_GB PCT_USED
+---------------------------------------- ---------- ---------- --------
+/u01/app/oracle/fast_recovery_area           200.00     118.40     59.2
+
+-- Read: backups are healthy -- nightly incrementals and the weekly full all
+-- COMPLETED, archive/control/datafile backups all current within hours, zero
+-- failures in 14 days, FRA at 59%. This is the one-screen "are we protected?"
+-- report to check each morning.

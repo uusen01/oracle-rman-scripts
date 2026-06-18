@@ -1,0 +1,44 @@
+$ rman target / cmdfile=scripts/delete_obsolete.sql log=delete_obsolete_2026-06-17.log
+
+connected to target database: ORADEMO (DBID=1234567890)
+
+RMAN> SHOW RETENTION POLICY;
+RMAN configuration parameters for database with db_unique_name ORADEMO are:
+CONFIGURE RETENTION POLICY TO RECOVERY WINDOW OF 14 DAYS;
+
+RMAN> REPORT OBSOLETE;
+Report of obsolete backups and copies
+Type                 Key    Completion Time     Filename/Handle
+-------------------- ------ ------------------- --------------------------------------
+Backup Set           1488   2026-05-30 01:07:40
+  Backup Piece       1488   2026-05-30 01:07:40 /u01/.../backupset/03st09r1_1_1
+Backup Set           1490   2026-05-30 01:09:02
+  Backup Piece       1490   2026-05-30 01:09:02 /u01/.../backupset/04st09r2_1_1
+Archived Log         7711   2026-05-29 23:50:11 /u01/.../archivelog/o1_mf_1_4101.arc
+
+RMAN> DELETE NOPROMPT OBSOLETE;
+allocated channel: c1
+deleted backup piece /u01/.../backupset/03st09r1_1_1
+deleted backup piece /u01/.../backupset/04st09r2_1_1
+deleted archived log file name=/u01/.../archivelog/o1_mf_1_4101.arc
+Deleted 3 OBSOLETE objects
+
+RMAN> LIST BACKUP SUMMARY;
+List of Backups
+===============
+Key     TY LV S Device Type Completion Time     Tag
+------- -- -- - ----------- ------------------- ---------------
+1841    B  0  A DISK        2026-06-14 01:07:55 FULL_L0_WEEKLY
+1908    B  1  A DISK        2026-06-17 04:02:18 INCR_L1_DAILY
+
+RMAN> REPORT NEED BACKUP;
+RMAN retention policy will be applied to the command
+RMAN retention policy is set to recovery window of 14 days
+Report of files that must be backed up to satisfy 14 days recovery window
+(no rows -- all files protected within the window)
+
+Recovery Manager complete.
+
+-- Read: backups older than the 14-day recovery window were reported, then deleted,
+-- reclaiming space. REPORT NEED BACKUP returns nothing -- the database is fully
+-- protected within the retention window after cleanup.

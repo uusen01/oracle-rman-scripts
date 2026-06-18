@@ -1,0 +1,30 @@
+$ rman target / cmdfile=scripts/crosscheck_backup.sql log=crosscheck_2026-06-17.log
+
+connected to target database: ORADEMO (DBID=1234567890)
+
+allocated channel: c1
+
+crosschecked backup piece: found to be 'AVAILABLE'
+backup piece handle=/u01/.../backupset/0fst1k9a_1_1 RECID=1841 STAMP=1179900001
+crosschecked backup piece: found to be 'AVAILABLE'
+backup piece handle=/u01/.../backupset/0gst1k9b_1_1 RECID=1842 STAMP=1179900002
+crosschecked backup piece: found to be 'EXPIRED'
+backup piece handle=/u01/.../backupset/05st0d3z_1_1 RECID=1502 STAMP=1178400221
+Crosschecked 64 objects
+
+crosschecked archived log: found to be 'AVAILABLE'
+Crosschecked 312 objects
+
+RMAN> DELETE NOPROMPT EXPIRED BACKUP;
+deleted backup piece
+backup piece handle=/u01/.../backupset/05st0d3z_1_1 RECID=1502 STAMP=1178400221
+Deleted 1 EXPIRED objects
+
+RMAN> LIST EXPIRED BACKUP SUMMARY;
+specification does not match any backup in the repository
+
+Recovery Manager complete.
+
+-- Read: one backup piece was missing from disk (status EXPIRED -- likely removed by
+-- an OS process) and its stale repository record was cleaned up. Everything else is
+-- AVAILABLE. Run this before delete_obsolete.sql so retention math is accurate.

@@ -1,0 +1,32 @@
+$ rman target / cmdfile=scripts/archivelog_backup.sql log=arch_2026-06-17_0400.log
+
+connected to target database: ORADEMO (DBID=1234567890)
+
+Starting backup at 2026-06-17 04:00:03
+allocated channel: c1
+allocated channel: c2
+channel c1: starting compressed incremental level 1 datafile backup set
+channel c1: starting piece 1 at 2026-06-17 04:00:05
+channel c2: starting compressed incremental level 1 datafile backup set
+channel c2: starting piece 1 at 2026-06-17 04:00:05
+channel c1: finished piece 1 at 2026-06-17 04:02:18
+piece handle=/u01/app/oracle/fast_recovery_area/ORADEMO/backupset/1hst9m2c_1_1 tag=INCR_L1_DAILY
+channel c2: finished piece 1 at 2026-06-17 04:02:44
+Finished backup at 2026-06-17 04:02:45
+
+Starting backup at 2026-06-17 04:02:46
+current log archived
+channel c1: starting compressed archived log backup set
+channel c1: input archived log thread=1 sequence=4571 RECID=8801 STAMP=1180000001
+channel c1: input archived log thread=1 sequence=4572 RECID=8802 STAMP=1180000002
+channel c1: finished piece 1 at 2026-06-17 04:03:39
+channel c1: deleting archived log(s)
+archived log file name=/u01/app/oracle/fast_recovery_area/ORADEMO/archivelog/o1_mf_1_4571.arc RECID=8801
+archived log file name=/u01/app/oracle/fast_recovery_area/ORADEMO/archivelog/o1_mf_1_4572.arc RECID=8802
+Finished backup at 2026-06-17 04:03:41
+
+Recovery Manager complete.
+
+-- Read: daily level-1 incremental (~2.7 min) plus archive log backup with input
+-- logs reclaimed. Small/fast because only changed blocks since the level-0 are
+-- captured. Running every 4 hours bounds RPO and keeps the FRA from filling.

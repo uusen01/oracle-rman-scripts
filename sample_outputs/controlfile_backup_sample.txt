@@ -1,0 +1,31 @@
+$ rman target / cmdfile=scripts/controlfile_backup.sql log=cf_2026-06-17.log
+
+connected to target database: ORADEMO (DBID=1234567890)
+
+RMAN> CONFIGURE CONTROLFILE AUTOBACKUP ON;
+new RMAN configuration parameters are successfully stored
+
+Starting backup at 2026-06-17 06:05:11
+allocated channel: c1
+channel c1: starting full datafile backup set
+channel c1: specifying datafile(s) in backup set
+including current control file in backup set
+channel c1: starting piece 1 at 2026-06-17 06:05:12
+channel c1: finished piece 1 at 2026-06-17 06:05:14
+piece handle=/u01/app/oracle/fast_recovery_area/ORADEMO/backupset/1jst9p4d_1_1 tag=CF_ONDEMAND
+Finished backup at 2026-06-17 06:05:14
+
+sql statement: ALTER DATABASE BACKUP CONTROLFILE TO TRACE AS '/u01/app/oracle/rman_logs/create_controlfile.trc' REUSE
+
+RMAN> LIST BACKUP OF CONTROLFILE;
+
+List of Backups
+===============
+Key     TY LV S Device Type Completion Time     #Pieces Tag
+------- -- -- - ----------- ------------------- ------- ----------
+1903    B  F  A DISK        2026-06-17 06:05:14 1       CF_ONDEMAND
+1898    B  F  A DISK        2026-06-14 01:09:17 1       (autobackup)
+
+-- Read: binary control file backup taken (tag CF_ONDEMAND), plus a readable
+-- CREATE CONTROLFILE trace written for manual recreation if every binary copy is
+-- lost. Autobackup is ON, so each run also produces an autobackup copy.

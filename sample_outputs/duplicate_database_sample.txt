@@ -1,0 +1,44 @@
+$ rman target sys@PRODSRC auxiliary sys@TESTAUX cmdfile=scripts/duplicate_database.sql log=duplicate_2026-06-17.log
+
+connected to target database: SRCDB (DBID=1234567890)
+connected to auxiliary database: AUXDB (not mounted)
+
+allocated channel: c1
+allocated channel: c2
+allocated channel: aux1
+
+Starting Duplicate Db at 2026-06-17 18:00:09
+contents of Memory Script:
+{
+   sql clone "alter system set db_unique_name = ''AUXDB'' ...";
+   shutdown clone immediate;
+   startup clone nomount;
+}
+executing Memory Script
+
+Starting restore at 2026-06-17 18:02:14
+channel aux1: using network backup set from service PRODSRC
+channel aux1: restoring control file
+channel aux1: restore complete, elapsed time: 00:00:35
+database mounted (clone)
+
+channel c1: starting datafile copy via network to clone
+channel c2: starting datafile copy via network to clone
+datafile 1 switched to datafile copy: /u01/app/oracle/oradata/AUXDB/system01.dbf
+datafile 7 switched to datafile copy: /u01/app/oracle/oradata/AUXDB/app_data01.dbf
+Finished restore at 2026-06-17 18:24:51
+
+contents of Memory Script:
+{
+   Alter clone database open resetlogs;
+}
+executing Memory Script
+database opened
+
+Finished Duplicate Db at 2026-06-17 18:26:03
+Recovery Manager complete.
+
+-- Read: active duplication cloned PRODSRC -> AUXDB over the network (no pre-existing
+-- backup needed), files remapped via DB_FILE_NAME_CONVERT to the AUXDB paths, clone
+-- opened RESETLOGS as an independent database. ~26 min end to end for this demo DB.
+-- Typical use: refreshing a test/QA environment from production.

@@ -1,0 +1,34 @@
+$ rman target /
+RMAN> @scripts/recover_database.sql
+
+connected to target database: ORADEMO (DBID=1234567890, not open)
+
+allocated channel: c1
+allocated channel: c2
+
+Starting restore at 2026-06-17 14:25:02
+channel c1: restoring datafile 00001 to /u01/app/oracle/oradata/ORADEMO/system01.dbf
+channel c2: restoring datafile 00007 to /u01/app/oracle/oradata/ORADEMO/app_data01.dbf
+channel c1: reading from backup piece /u01/.../backupset/0fst1k9a_1_1
+channel c2: reading from backup piece /u01/.../backupset/0gst1k9b_1_1
+channel c1: restored backup piece 1, elapsed time: 00:05:48
+channel c2: restored backup piece 1, elapsed time: 00:06:31
+Finished restore at 2026-06-17 14:31:40
+
+Starting recover at 2026-06-17 14:31:41
+channel c1: applying incremental backup INCR_L1_DAILY
+channel c1: starting media recovery
+archived log for thread 1 with sequence 4571 is already on disk as file ...o1_mf_1_4571.arc
+archived log for thread 1 with sequence 4572 is already on disk as file ...o1_mf_1_4572.arc
+media recovery complete, elapsed time: 00:01:55
+Finished recover at 2026-06-17 14:33:40
+
+RMAN> ALTER DATABASE OPEN RESETLOGS;
+Statement processed
+
+Recovery Manager complete.
+
+-- Read: full recovery -- datafiles restored from the level-0, level-1 incremental
+-- applied, archived redo rolled forward, database OPENed RESETLOGS. Total restore +
+-- recover ~8.5 min for this demo DB. ACTION: take a fresh full_backup.sql now, since
+-- RESETLOGS started a new redo incarnation.

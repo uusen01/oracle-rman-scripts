@@ -1,0 +1,56 @@
+$ rman target / cmdfile=scripts/full_backup.sql log=full_backup_2026-06-14.log
+
+Recovery Manager: Release 21.0.0.0.0 - Production on Sat Jun 14 01:00:02 2026
+Copyright (c) 1982, 2021, Oracle and/or its affiliates.  All rights reserved.
+
+connected to target database: ORADEMO (DBID=1234567890)
+
+RMAN> CONFIGURE RETENTION POLICY TO RECOVERY WINDOW OF 14 DAYS;
+new RMAN configuration parameters are successfully stored
+
+RMAN> CONFIGURE CONTROLFILE AUTOBACKUP ON;
+new RMAN configuration parameters are successfully stored
+
+Starting backup at 2026-06-14 01:00:07
+allocated channel: c1
+allocated channel: c2
+channel c1: starting compressed incremental level 0 datafile backup set
+channel c1: specifying datafile(s) in backup set
+input datafile file number=00001 name=/u01/app/oracle/oradata/ORADEMO/system01.dbf
+input datafile file number=00003 name=/u01/app/oracle/oradata/ORADEMO/sysaux01.dbf
+input datafile file number=00007 name=/u01/app/oracle/oradata/ORADEMO/app_data01.dbf
+channel c1: starting piece 1 at 2026-06-14 01:00:09
+channel c2: starting compressed incremental level 0 datafile backup set
+input datafile file number=00008 name=/u01/app/oracle/oradata/ORADEMO/app_index01.dbf
+channel c2: starting piece 1 at 2026-06-14 01:00:09
+channel c1: finished piece 1 at 2026-06-14 01:06:41
+piece handle=/u01/app/oracle/fast_recovery_area/ORADEMO/backupset/0fst1k9a_1_1 tag=FULL_L0_WEEKLY comment=NONE
+channel c2: finished piece 1 at 2026-06-14 01:07:55
+piece handle=/u01/app/oracle/fast_recovery_area/ORADEMO/backupset/0gst1k9b_1_1 tag=FULL_L0_WEEKLY comment=NONE
+Finished backup at 2026-06-14 01:07:55
+
+Starting backup at 2026-06-14 01:07:56
+current log archived
+channel c1: starting compressed archived log backup set
+channel c1: finished piece 1 at 2026-06-14 01:09:12
+channel c1: deleting archived log(s)
+Finished backup at 2026-06-14 01:09:14
+
+Starting Control File and SPFILE Autobackup at 2026-06-14 01:09:15
+piece handle=/u01/app/oracle/fast_recovery_area/ORADEMO/autobackup/c-1234567890-20260614-00 comment=NONE
+Finished Control File and SPFILE Autobackup at 2026-06-14 01:09:17
+
+RMAN> LIST BACKUP OF DATABASE SUMMARY;
+
+List of Backups
+===============
+Key     TY LV S Device Type Completion Time     #Pieces #Copies Compressed Tag
+------- -- -- - ----------- ------------------- ------- ------- ---------- ---------------
+1841    B  0  A DISK        2026-06-14 01:07:55 1       1       YES        FULL_L0_WEEKLY
+1842    B  0  A DISK        2026-06-14 01:07:55 1       1       YES        FULL_L0_WEEKLY
+
+Recovery Manager complete.
+
+-- Read: weekly level-0 completed in ~9 min, ~238 GB compressed to backup sets,
+-- archive logs captured and deleted, control file + SPFILE autobackup taken.
+-- Backup is the base for the daily level-1 incrementals.

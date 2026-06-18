@@ -1,0 +1,40 @@
+$ rman target / cmdfile=scripts/validate_database.sql log=validate_2026-06-15.log
+
+connected to target database: ORADEMO (DBID=1234567890)
+
+Starting backup at 2026-06-15 22:00:04
+allocated channel: c1
+allocated channel: c2
+channel c1: starting validation of datafile
+channel c1: specifying datafile(s) for validation
+input datafile file number=00007 name=/u01/app/oracle/oradata/ORADEMO/app_data01.dbf
+channel c2: starting validation of datafile
+input datafile file number=00001 name=/u01/app/oracle/oradata/ORADEMO/system01.dbf
+channel c1: validation complete, elapsed time: 00:04:12
+
+List of Datafiles
+=================
+File Status Marked Corrupt Empty Blocks Blocks Examined High SCN
+---- ------ -------------- ------------ --------------- --------
+1    OK     0              12,118       131,072         5567219
+3    OK     0              28,440       262,144         5567219
+7    OK     0              41,002       7,340,032       5567240
+8    OK     0              19,883       2,097,152       5567240
+
+channel c1: validation complete, elapsed time: 00:00:55
+Finished backup at 2026-06-15 22:05:21
+
+Starting restore at 2026-06-15 22:05:22
+channel c1: starting validation of datafile backup set
+channel c1: restore validate complete, elapsed time: 00:02:40
+Finished restore at 2026-06-15 22:08:03
+
+RMAN> SELECT file#, block#, blocks, corruption_type FROM v$database_block_corruption;
+
+no rows selected
+
+Recovery Manager complete.
+
+-- Read: every datafile validated OK with 0 corrupt blocks (CHECK LOGICAL caught
+-- nothing), and RESTORE...VALIDATE confirms the existing backups could actually be
+-- used to restore. This is the proof that backups are recoverable -- run weekly.

@@ -1,0 +1,47 @@
+$ rman target /
+RMAN> @scripts/restore_controlfile.sql
+
+RMAN> SET DBID 1234567890;
+executing command: SET DBID
+
+RMAN> STARTUP NOMOUNT;
+Oracle instance started
+Total System Global Area    8589934592 bytes
+Fixed Size                     9145320 bytes
+Variable Size               1610612736 bytes
+Database Buffers            6945574912 bytes
+Redo Buffers                  24576000 bytes
+
+allocated channel: c1
+
+RMAN> SET CONTROLFILE AUTOBACKUP FORMAT FOR DEVICE TYPE DISK TO
+        '/u01/app/oracle/fast_recovery_area/%d/autobackup/%F';
+executing command: SET CONTROLFILE AUTOBACKUP FORMAT
+
+Starting restore at 2026-06-17 14:22:09
+channel c1: looking for AUTOBACKUP on day: 20260617
+channel c1: AUTOBACKUP found: c-1234567890-20260617-00
+channel c1: restoring control file from AUTOBACKUP c-1234567890-20260617-00
+channel c1: control file restore from AUTOBACKUP complete
+output file name=/u01/app/oracle/oradata/ORADEMO/control01.ctl
+output file name=/u01/app/oracle/oradata/ORADEMO/control02.ctl
+Finished restore at 2026-06-17 14:22:31
+
+RMAN> ALTER DATABASE MOUNT;
+Statement processed
+released channel: c1
+
+RMAN> CROSSCHECK BACKUP;
+Crosschecked 66 objects
+
+RMAN> LIST BACKUP OF DATABASE SUMMARY;
+Key     TY LV S Device Type Completion Time     Tag
+------- -- -- - ----------- ------------------- ---------------
+1841    B  0  A DISK        2026-06-14 01:07:55 FULL_L0_WEEKLY
+1908    B  1  A DISK        2026-06-17 04:02:18 INCR_L1_DAILY
+
+Recovery Manager complete.
+
+-- Read: control file restored from the most recent autobackup (located by DBID),
+-- database MOUNTed, repository reconciled. The level-0 + level-1 backups are visible
+-- and ready. Next step: recover_database.sql to restore datafiles and OPEN RESETLOGS.
